@@ -1,0 +1,94 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+// Define the soccer field dimensions
+const int fieldWidth = 10;
+const int fieldHeight = 6;
+
+// Define player and ball positions
+struct Position {
+    int x, y;
+};
+
+// Define the player and ball structures
+struct Player {
+    Position position;
+};
+
+struct Ball {
+    Position position;
+};
+
+// Function to initialize the game
+void initializeGame(Player& player, Ball& ball) {
+    // Initialize player and ball positions
+    player.position.x = fieldWidth / 2;
+    player.position.y = fieldHeight - 1;
+    
+    ball.position.x = rand() % fieldWidth;
+    ball.position.y = rand() % (fieldHeight / 2);
+}
+
+// Function to display the soccer field
+void displayField(const Player& player, const Ball& ball) {
+    for (int i = 0; i < fieldHeight; ++i) {
+        for (int j = 0; j < fieldWidth; ++j) {
+            if (i == player.position.y && j == player.position.x) {
+                cout << "P ";  // Display player
+            } else if (i == ball.position.y && j == ball.position.x) {
+                cout << "B ";  // Display ball
+            } else {
+                cout << ". ";   // Display empty space
+            }
+        }
+        cout << endl;
+    }
+}
+
+// Function to update the game state
+void updateGame(Player& player, Ball& ball) {
+    // Move the player based on user input (for simplicity, we assume the player always moves to the right)
+    player.position.x += 1;
+
+    // Move the ball randomly
+    ball.position.x += rand() % 3 - 1;  // Move left, stay in place, or move right
+    ball.position.y += 1;  // Move downward
+
+    // Check if the ball reaches the bottom of the field
+    if (ball.position.y == fieldHeight - 1) {
+        // Reset the ball position to the top
+        ball.position.x = rand() % fieldWidth;
+        ball.position.y = 0;
+    }
+}
+
+int main() {
+    // Seed the random number generator
+    srand(static_cast<unsigned>(time(0)));
+
+    // Initialize player and ball
+    Player player;
+    Ball ball;
+    initializeGame(player, ball);
+
+    // Game loop
+    while (true) {
+        // Display the current state of the game
+        displayField(player, ball);
+
+        // Update the game state
+        updateGame(player, ball);
+
+        // Wait for a short period to slow down the game (for simplicity)
+        // In a real game, you would use a game loop with proper timing
+        for (int i = 0; i < 1000000; ++i) {}
+
+        // Clear the console for the next frame (for simplicity)
+        system("clear");
+    }
+
+    return 0;
+}
